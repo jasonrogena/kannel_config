@@ -1,0 +1,56 @@
+#
+# Sample configuration file for Kannel bearerbox on Debian.
+# See the documentation for explanations of fields.
+#
+
+# HTTP administration is disabled by default. Make sure you set the
+# password if you enable it. 0773984922
+
+group = core
+admin-port = 13000
+smsbox-port = 13001
+admin-password = 0wimbledon1
+admin-deny-ip = "*.*.*.*"
+admin-allow-ip = "127.0.0.1"
+#wapbox-port = 13002
+#wdp-interface-name = "*"
+log-file = "/var/log/kannel/bearerbox.log"
+log-level = 1
+box-deny-ip = "*.*.*.*"
+box-allow-ip = "127.0.0.1"
+
+#group = wapbox
+#bearerbox-host = localhost
+#log-file = "/var/log/kannel/wapbox.log"
+
+#group configures interfacing
+group = smsc
+smsc = at
+modemtype = auto
+device = /dev/ttyUSB1
+my-number = +254773984922
+#sms-centre = +254770000040
+connect-allow-ip = 127.0.0.1
+log-level = 1
+include = /etc/kannel/modems.conf
+
+#group configures kannel module that dispatches SMSs
+group = smsbox
+bearerbox-host = 127.0.0.1
+sendsms-port = 13013
+global-sender = +254773984922
+log-level = 1
+
+#group that allows web apps to send SMSs using kannel (security)
+group = sendsms-user
+username = kanneluser
+password = edfse32fdse231niehn32fdsi323
+concatenation = true
+max-messages = 10
+
+#group that configures how kannel sends messages to web apps
+group = sms-service
+keyword-regex = .*
+catch-all = yes
+max-messages = 0
+get-url = "http://localhost/kannel/sms_router.php?phone=%p&text=%a"
